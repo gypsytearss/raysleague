@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" type="text/css" href="/views/style.css">
+<title> Football Pick 'Em </title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="/js/genFuncs.js"></script>
+<script src="/js/login-reg-overlay.js"></script>
+<script>
+$(document).ready(function() {
+
+	$("title").text("Scooter's Football League");
+
+	checkLogin();
+});
+</script>
+</head>
+<body onload = "showQuotes();">
+<ul>
+	<li id="home"><a href="/">Scooter's Football League</a></li>
+	<li id="image" onclick=showMenu()><img src="/dropicon.png" />
+	</li>
+	<li id="login">login</li>
+	<li id="register">register</li>
+</ul>
+<header>
+	<p class="quote" style="inline"></p>
+	<p id="author"></p>
+</header>
+	<div class="weekTitle">Scooter's Football League<b style="color:red">:About</b></div>
+	<div class="about">
+		<p>Started amongst the residents of Coral Circle in Pismo Beach, CA in 2010, SFL aims to be an equal opportunity provider of bragging rights to all participants, regardless of age, gender, race, hair color, or nfl-fandom. <br><br>
+			The premise is simple: pick the winners of as many games as you can each week of the regular nfl season and take your chances head-to-head against the rest of the league for the respect and admiration of your family, peers, and neighbors. <br><br>
+			Once you're ready to start, use the navigation at the top of the page to register or login to your existing account.<br>Good luck!</p>
+	</div>
+	<div class="rules">
+		<p><b>A few simple rules: </b><br><br>
+			<span> 1. </span> All picks must be submitted before the start of the week's play. If the start of play for the week begins on Thursday at 6PM, no picks will be admitted after that time. <br><br>
+			<span> 2. </span> Only members of the league will be eligible for weekly pick tracking, which can be viewed from the drop-down menu at the top of the page. <br><br>
+			<span> 3. </span> All members' weekly picks will be made public for viewing on the <a href="views/standings/week/1">Game Day Page</a> once the week's play begins. <br><br>
+			<span> 4. </span> Each week every participant should enter a "tiebreaker" point total for the last game of the week. In the event of a tie between two or more participants in that week, the player whose point total is closer to the actual point total for that game will be crowned the winner. <br><br>
+			<span> 5. </span> If a player fails to submit their picks by the week's deadline, the player will receive the same amount of points for the week as the lowest of all other participants. <br><br>
+		</p>
+	</div>
+<footer>
+	<img src="/footballicon.png" />
+	<p> Copyright 2013 Scooter's Football League <br> Site design by <a href="mailto:colinmatthew@gmail.com">Colin Rennie</a></p>
+</footer>
+</body>
+</html>
+

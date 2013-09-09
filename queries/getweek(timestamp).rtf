@@ -1,0 +1,24 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf390
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 DROP FUNCTION nfl.getweek(timestamp with time zone);\
+CREATE OR REPLACE FUNCTION "nfl"."getweek" ("now" timestamp with time zone) \
+RETURNS TABLE( id varchar, season integer, week integer, scheduled date, status varchar, hometeam_id varchar, hometeam_wins integer, hometeam_losses integer, hometeam_ties integer, awayteam_id varchar, awayteam_wins integer, awayteam_losses integer, awayteam_ties integer) \
+AS '\
+BEGIN\
+  return query (\
+ SELECT a.id, a.season, a.week, a.scheduled, a.status, a.hometeam_id, \
+    b.wins AS hometeam_wins, b.losses AS hometeam_losses, \
+    b.ties AS hometeam_ties, a.awayteam_id, c.wins AS awayteam_wins, \
+    c.losses AS awayteam_losses, c.ties AS awayteam_ties\
+   FROM games a\
+   JOIN teams b ON a.hometeam_id::text = b.id::text\
+   JOIN teams c ON a.awayteam_id::text = c.id::text\
+  WHERE a.season = 2013\
+  AND a.week = (SELECT min(d.week) FROM games d WHERE d.scheduled > $1)\
+  ORDER BY a.season, a.week, a.scheduled\
+  );\
+END ' LANGUAGE "plpgsql"}

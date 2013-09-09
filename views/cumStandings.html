@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" type="text/css" href="/views/style.css">
+<title> Football Pick 'Em </title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="/js/genFuncs.js"></script>
+<script src="/js/login-reg-overlay.js"></script>
+<script>
+$(document).ready(function() {
+
+	$("title").text("Scooter's Football League - Overall Standings");
+
+	checkLogin();
+});
+</script>
+</head>
+<body onload = "showQuotes();">
+<ul>
+	<li id="home"><a href="/">Scooter's Football League</a></li>
+	<li id="image" onclick=showMenu()><img src="/dropicon.png" />
+	</li>
+	<li id="login">login</li>
+	<li id="register">register</li>
+</ul>
+
+	<div class="weekTitle">Scooter's Football League<b style="color:red">:Overall Standings</b></div>
+	<div class="about">
+		<p> Still under development - coming soon!</p>
+	</div>
+<footer>
+	<img src="/footballicon.png" />
+	<p> Copyright 2013 Scooter's Football League <br> Site design by <a href="mailto:colinmatthew@gmail.com">Colin Rennie</a></p>
+</footer>
+</body>
+</html>
+

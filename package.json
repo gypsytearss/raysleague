@@ -1,0 +1,19 @@
+{
+	"name": "scooters-league",
+	"description": "Football league picks selection page",
+	"version": "0.0.1",
+	"private": true,
+	"engines": {
+		"node": "< 0.10"
+	},
+	"dependencies": {
+		"express": "3.3.4",
+		"pg": "2.3.1",
+		"util": "0.4.9",
+		"elementtree": "0.1.5",
+		"sax": "0.5.4",
+		"debug": "0.7.2",
+		"nodemailer": "0.5.2",
+		"moment": "2.1.0"
+	}
+}

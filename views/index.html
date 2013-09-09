@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" type="text/css" href="/views/style.css">
+<title> Football Pick 'Em </title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="/js/genFuncs.js"></script>
+<script src="/js/login-reg-overlay.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
+<script>
+$(document).ready(function() {
+
+	loadWeek(sessionStorage.week);
+	$("title").text("Scooter's League - Week " + sessionStorage.week);
+
+	var lefty = document.getElementById('leftP');
+
+	lefty.addEventListener('click', function() {
+		loadWeek(Math.max(parseInt(sessionStorage.week)-1,1));
+	}, false);
+
+	var righty = document.getElementById('rightP');
+
+	righty.addEventListener('click', function () {
+		loadWeek(Math.min(parseInt(sessionStorage.week)+1,17));
+	}, false);
+
+	checkLogin();
+});
+</script>
+</head>
+<body onload = "showQuotes();">
+<ul>
+	<li id="home"><a href="/">Scooter's Football League</a></li>
+	<li id="image" onclick=showMenu()><img src="/dropicon.png" />
+	</li>
+	<li id="login">login</li>
+	<li id="register">register</li>
+</ul>
+	<div class="weekTitle"></div>
+	<p id="leftP"> < </p>
+	<p id="rightP"> > </p>
+<footer>
+	<img src="/footballicon.png" />
+	<p> Copyright 2013 Scooter's Football League <br> Site design by <a href="mailto:colinmatthew@gmail.com">Colin Rennie</a></p>
+</footer>
+</body>
+</html>
+
