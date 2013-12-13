@@ -6,7 +6,7 @@ var etree = require('elementtree'),
 
 // 'Options' for http GET request to pull-in XML data from SportsDataLLC's api
 var options = { host : 'api.sportsdatallc.org',
-				path : '/nfl-t1/teams/2012/REG/standings.xml?api_key=v38np4ejnbegrdztr68bfsp6'
+				path : '/nfl-t1/teams/2013/REG/standings.xml?api_key=bwcd72z8w8t5htun3ky7v2mk'
 };
 // Connection string to Gandi hosting instance's postgres database (localhost)
 var conString = "tcp://hosting-db:alphak1ll$@localhost/postgres";
@@ -69,7 +69,7 @@ var req = http.request(options, function(res) {
 
 		for (z = 0; z < teams.length; z++) {	
 
-			var query = client.query('UPDATE nfl.teams SET name = $2, market = $3, wins = $4, losses = $5, ties = $6 WHERE id = $1::VARCHAR;', 
+			var query = client.query('UPDATE nfl.teams SET name = $2, market = $3, wins = $4, losses = $5, ties = $6, updated_at = now() WHERE id = $1::VARCHAR;', 
 				[teams[z].id, teams[z].name, teams[z].market, teams[z].wins, teams[z].losses, teams[z].ties]);
 
 			query.on('error', function(error) {
@@ -79,8 +79,8 @@ var req = http.request(options, function(res) {
 				console.log("UPDATE ROW: " + row.id);
 			});
 
-			var again = client.query('INSERT INTO nfl.teams(id, name, market, wins, losses, ties) \
-				SELECT $1::VARCHAR, $2, $3, $4, $5, $6 WHERE NOT EXISTS (SELECT 1 FROM nfl.teams WHERE id = $1::VARCHAR);', 
+			var again = client.query('INSERT INTO nfl.teams(id, name, market, wins, losses, ties, updated_at) \
+				SELECT $1::VARCHAR, $2, $3, $4, $5, $6, now() WHERE NOT EXISTS (SELECT 1 FROM nfl.teams WHERE id = $1::VARCHAR);', 
 				[teams[z].id, teams[z].name, teams[z].market, teams[z].wins, teams[z].losses, teams[z].ties]);
 
 			again.on('error', function(error) {

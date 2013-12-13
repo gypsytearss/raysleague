@@ -6,11 +6,10 @@ var etree = require('elementtree'),
 
 // 'Options' for http GET request to pull-in XML data from SportsDataLLC's api
 var options = { host : 'api.sportsdatallc.org',
-				path : '/nfl-t1/2013/REG/schedule.xml?api_key=v38np4ejnbegrdztr68bfsp6'
+				path : '/nfl-t1/2013/REG/schedule.xml?api_key=bwcd72z8w8t5htun3ky7v2mk'
 };
 // Connection string to Gandi hosting instance's postgres database (localhost)
 var conString = "tcp://hosting-db:alphak1ll$@localhost/postgres";
-
 
 var content = "",
 	games = [],
@@ -78,7 +77,7 @@ var req = http.request(options, function(res) {
 		for (z = 0; z < games.length; z++) {	
 
 			var query = client.query('UPDATE nfl.games SET season = $2, type = $3, week = $4, scheduled = $5, status = $6, hometeam_id = $7\
-				, awayteam_id = $8 WHERE id = $1;', 
+				, awayteam_id = $8, updated_at = now() WHERE id = $1;', 
 				[games[z].id, games[z].season, games[z].type, games[z].week, games[z].scheduled, games[z].status, 
 				games[z].hometeam_id, games[z].awayteam_id]);
 
@@ -89,8 +88,8 @@ var req = http.request(options, function(res) {
 				console.log("ROW: " + row.id);
 			});
 
-			var again = client.query('INSERT INTO nfl.games(id, season, type, week, scheduled, status, hometeam_id, awayteam_id) \
-				SELECT $1::VARCHAR, $2, $3, $4, $5, $6, $7, $8 WHERE NOT EXISTS (SELECT 1 FROM nfl.games WHERE id = $1);', 
+			var again = client.query('INSERT INTO nfl.games(id, season, type, week, scheduled, status, hometeam_id, awayteam_id, updated_at) \
+				SELECT $1::VARCHAR, $2, $3, $4, $5, $6, $7, $8, now() WHERE NOT EXISTS (SELECT 1 FROM nfl.games WHERE id = $1);', 
 				[games[z].id, games[z].season, games[z].type, games[z].week, games[z].scheduled, games[z].status, 
 				games[z].hometeam_id, games[z].awayteam_id]);
 

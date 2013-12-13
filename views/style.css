@@ -264,20 +264,21 @@ header p {
 }
 
 header .quote {
-	color: white;
+	color: #BFBFBF;
 	font-size: 32px;
 	font-style: bold;
 	padding-bottom: 0;
-	vertical-align: middle;
+	vertical-align: middle;/*
 	text-shadow: 
 		2px 2px 2px #BFBFBF,
-		-1px -1px 0px #F2F2F2;
+		-1px -1px 0px #F2F2F2;*/
 }
 
 header #author {
 	font-size: 15px;
 	font-style: italic;
 	position: relative;
+	color: black;
 }
 
 html {
@@ -343,10 +344,10 @@ body .matchups td:nth-child(even):hover {
 }
 
 body .overview {
-	margin-left: 150px;
+	margin-left: 100px;
 	margin-top: 25px;
 	min-width: 865px;
-	max-width: 1000px;
+	max-width: 1100px;
 	padding: 0 0 0 0;
 }
 
@@ -355,12 +356,13 @@ body .overview td p {
 }
 
 body .overview #players {
-	width: 150px;
+	width: 125px;
 	margin: 0 0 0 0;
+	overflow: hidden;
 }
 
-body .overview #tiebreaker {
-	width: 100px;
+body .overview #tiebreak, body .overview #correctpicks {
+	width: 80px;
 	margin: 0 0 0 0;
 }
 

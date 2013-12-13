@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Nodemailer
 ==========
 
@@ -772,3 +773,9 @@ message composing/sending process you should look at the  appropriate module.
 ## License
 
 **Nodemailer** is licensed under [MIT license](https://github.com/andris9/Nodemailer/blob/master/LICENSE). Basically you can do whatever you want to with it.
+=======
+raysleague
+==========
+
+scootersfootballleague.com repository
+>>>>>>> af12ad71f56b204d4637bc2b7a165393559d02a9

@@ -120,15 +120,15 @@ function loadWeek(week) {
 			}
 
 			$('body').append("<table class=\"matchups\"><tr id=" + data[i].id + "><td id=\"scheduled\">" + dateToday.format("h:mmA")
-			 + "<td id=" + data[i].hometeam_id + 
-				" onclick=highlight('" + data[i].id + "','" + data[i].hometeam_id + "','" + data[i].awayteam_id + "')>" + 
-				data[i].hometeam_market + " " + data[i].hometeam_name + 
-				"<br> (" + data[i].hometeam_wins + "-" + data[i].hometeam_losses + "-" + data[i].hometeam_ties + ")" + 
-				"<td id=\"versus\">.... v ...." +
-				"<td id=" + data[i].awayteam_id + 
+			 + "<td id=" + data[i].awayteam_id + 
 				" onclick=highlight('" + data[i].id + "','" + data[i].awayteam_id + "','" + data[i].hometeam_id + "')>" + 
-				data[i].awayteam_market + " " + 
-				data[i].awayteam_name + "<br> (" + data[i].awayteam_wins + "-" + data[i].awayteam_losses + "-" + data[i].awayteam_ties + ")" + 
+				data[i].awayteam_market + " " + data[i].awayteam_name + 
+				"<br> (" + data[i].awayteam_wins + "-" + data[i].awayteam_losses + "-" + data[i].awayteam_ties + ")" + 
+				"<td id=\"versus\">.... at ...." +
+				"<td id=" + data[i].hometeam_id + 
+				" onclick=highlight('" + data[i].id + "','" + data[i].hometeam_id + "','" + data[i].awayteam_id + "')>" + 
+				data[i].hometeam_market + " " + 
+				data[i].hometeam_name + "<br> (" + data[i].hometeam_wins + "-" + data[i].hometeam_losses + "-" + data[i].hometeam_ties + ")" + 
 				"</tr></table>");
 		};
 
@@ -157,11 +157,61 @@ function loadWeek(week) {
 	.fail(function() { console.log("error loading data from GET /games request."); });
 }
 
-function Game (gameid, hometeam_id, awayteam_id, tiebreaker) {
+function Game (gameid, hometeam_id, awayteam_id, tiebreaker, winner) {
 	this.gameid = gameid;
 	this.hometeam_id = hometeam_id;
 	this.awayteam_id = awayteam_id;
 	this.tiebreaker = tiebreaker;
+	this.winner = winner;
+}
+
+function loadStandings() {
+
+	$('.overview').empty();
+
+	var getReq = $.get("/standings/overall", function(data) {
+
+		if (data[0].week) { 
+
+			var players = [],
+				weeks = [];
+
+			for (i = 0; i < data.length; i++) {
+
+				if (players.indexOf(data[i].userid) == -1) { players.push(data[i].userid); }
+				var grep = $.grep(weeks, function(e) { return e.week == data[i].week; });
+				if (grep.length == 0) { weeks.push(data[i].week); }
+			};
+
+			var selections = "<tr><td id=\"players\">";
+			for (x = 1; x < 18; x++) {
+
+				selections += "<td id=\"selection\"><b><p style=\"color:#BFBFBF;\">" + x + "</p></b></td>";
+			}
+			selections += "<td id=\"tiebreak\"><b> Total </b></td></tr>";
+
+			for (j = 0; j < players.length; j++) {
+
+				var total = 0;
+				var playerTotals = "<tr><td id=\"players\"><b>" + players[j] + "</td>";
+
+				for (k = 1; k < 18; k++) {
+
+					var greppy = $.grep(data, function(e) { return (e.week == k && e.userid == players[j])});
+					if (!greppy[0]) { playerTotals  += "<td>"; }
+					else { 
+						playerTotals  += "<td id=\"selection\" style=\"color:black;\">" + greppy[0].count + "</td>";
+						total += parseInt(greppy[0].count);
+					}
+				}
+
+				playerTotals  += "<td id=\"tiebreak\"><b>" + total + "</b></td></tr>";
+				selections += playerTotals ;
+			}
+
+			$('.overview').append(selections);
+		}
+	});
 }
 
 function loadWeekPicks(week) {
@@ -186,8 +236,6 @@ function loadWeekPicks(week) {
 	var dock = $.get(weekReq, function(data) {
 
 		if (data[0].scheduled) { 
-			console.log("Scheduled:" + moment(data[0].scheduled).format("X"));
-			console.log("Date.now():" + Date.now());
 
 			sessionStorage.week = data[0].week;
 
@@ -199,7 +247,7 @@ function loadWeekPicks(week) {
 				if (players.indexOf(data[i].userid) == -1) { players.push(data[i].userid); }
 				var grep = $.grep(games, function(e) { return e.gameid == data[i].gameid; });
 				if (grep.length == 0) { 
-					var newGame = new Game(data[i].gameid, data[i].hometeam_id, data[i].awayteam_id, data[i].tiebreaker);
+					var newGame = new Game(data[i].gameid, data[i].hometeam_id, data[i].awayteam_id, data[i].tiebreaker, data[i].winner);
 					games.push(newGame);
 				};
 			};
@@ -207,31 +255,62 @@ function loadWeekPicks(week) {
 			var selections = "<tr><td id=\"players\">";
 			for (x = 0; x < games.length; x++) {
 
-				selections += "<td id=\"selection\"><b><p style=\"color:black;\">" + games[x].hometeam_id + "</p><br> -v- <br>\
-				<p style=\"color:#BFBFBF;\">" + games[x].awayteam_id + "</p></td>";
+				selections += "<td id=\"selection\"><b><p style=\"color:black;\">" + games[x].awayteam_id + "</p></b><br>\
+					<p style=\"color:black;font-size:12px\"> at <br><b>\
+					<p style=\"color:#BFBFBF;\">" + games[x].hometeam_id + "</p></td>";
 			}
-			selections += "<td id=\"tiebreaker\"><b> Tiebreaker </b></tr></tr>";
+			selections += "<td id=\"tiebreak\"><b> Tie<br>Breaker </b></td><td id=\"correctpicks\"><b> Winners </b></td></tr>";
+
+			var max = { user: "",
+						number: 0,
+						diff: 1000};
 
 			for (j = 0; j < players.length; j++) {
 
-				var playerSelections = "<tr><td class=\"players\">" + players[j] + "</td>";
-				var playerTiebreaker = "";
+				var playerSelections = "<tr><td id=\"players\">" + players[j] + "</td>";
+				var playerTiebreaker = "",
+					correct = 0,
+					total = 0,
+					newDiff = 0;
+
 				for (k = 0; k < games.length; k++) {
 
 					var greppy = $.grep(data, function(e) { return (e.gameid == games[k].gameid && e.userid == players[j])});
 					if (!greppy[0].teamid) { playerSelections += "<td>"; }
 					else { 
-						playerSelections += "<td id=\"selection\" style=\"color:";
-						if (greppy[0].teamid == games[k].hometeam_id) { playerSelections += "black;\">" + greppy[0].teamid + "</td>"; }
-						else { playerSelections += "#BFBFBF;\">" + greppy[0].teamid + "</td>"; }
+						if (games[k].winner == null) {
+							playerSelections += "<td id=\"selection\" style=\"color:";
+							if (greppy[0].teamid == games[k].awayteam_id) { playerSelections += "black;"; }
+							else { playerSelections += "#BFBFBF;"; }
+							playerSelections += "\">";
+						}
+						else {
+							if (greppy[0].teamid != games[k].winner) { playerSelections += "<td id=\"selection\"><s>"; }
+							else { 
+								playerSelections += "<td id=\"selection\" style=\"color:#24A2F0;\"><b>";
+								correct += 1;
+							}
+							total += 1;
+						}
+						playerSelections += greppy[0].teamid + "</td>";
 						playerTiebreaker = greppy[0].tiebreaker;
+						newDiff = Math.abs(greppy[0].tiebreaker - greppy[0].tiebreakertotal);
 					}
-
 				}
-				playerSelections += "<td id=\"tiebreaker\"><b>" + playerTiebreaker + "</b></tr>";
+
+				if (correct > max.number) { max.number = correct; max.user = players[j]; max.diff = newDiff;}
+				if (correct == max.number && newDiff < max.diff) { max.number = correct; max.user = players[j]; max.diff = newDiff;}
+
+				playerSelections += "<td id=\"tiebreak\"><b>" + playerTiebreaker + "</b></td>\
+					<td id=\"correctpicks\" style=\"color:#24A2F0;\"><b>" + correct + "</b></td></tr>";
 				selections += playerSelections;
 			}
+
 			$('.overview').append(selections);
+
+			if (total == games.length) {
+				findWinner(max);
+			}
 
 		}
 		else {
@@ -245,6 +324,18 @@ function loadWeekPicks(week) {
 
 
 /****************************************** TRACK + SUBMIT PICKS ***************************************************/
+
+function findWinner (max) {
+
+	$('.overview #players').each(function () {
+
+		if ($(this).html() == max.user) {
+			$(this).css("color","red");
+			$(this).css("font-weight","bold");
+		}
+	});
+
+}
 
 
 var selections = [];

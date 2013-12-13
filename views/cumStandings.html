@@ -10,6 +10,7 @@
 <script>
 $(document).ready(function() {
 
+	loadStandings();
 	$("title").text("Scooter's Football League - Overall Standings");
 
 	checkLogin();
@@ -26,9 +27,9 @@ $(document).ready(function() {
 </ul>
 
 	<div class="weekTitle">Scooter's Football League<b style="color:red">:Overall Standings</b></div>
-	<div class="about">
-		<p> Still under development - coming soon!</p>
-	</div>
+	<p style="color:#BFBFBF; display:inline; "><b> Week </b></p>
+	<table class="overview" cellspacing=10 style="margin-top: 0px;">
+	</table>
 <footer>
 	<img src="/footballicon.png" />
 	<p> Copyright 2013 Scooter's Football League <br> Site design by <a href="mailto:colinmatthew@gmail.com">Colin Rennie</a></p>

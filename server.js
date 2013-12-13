@@ -298,6 +298,28 @@ app.get('/standings/week/:week', function (req, res) {
 		});
 });
 
+app.get('/standings/overall', function (req, res) {
+
+	var client = new pg.Client(conString);
+	client.on('drain', client.end.bind(client));
+
+	client.connect( function (err) {
+		if (err) {
+			return console.error('Could not connect to Postgres:' + err);
+		}});
+
+	console.log(req.params.week);
+
+	var query = client.query('SELECT * FROM nfl."Standings"',
+
+		function (err, results) {
+			if (err) { throw err; }
+			else {
+				res.json(results.rows);
+			}
+		});
+});
+
 app.get('/views/standings/week/:week', function (req, res) {
 
 	res.render('wkStandings.html');
